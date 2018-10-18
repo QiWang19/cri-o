@@ -99,6 +99,28 @@ func validateConfig(config *server.Config) error {
 		}
 	}
 
+	for _, d := range config.RuntimeConfig.AdditionalDevices {
+		split := strings.Split(d, ":")
+		switch len(split) {
+		case 3:
+			if !server.ValidDeviceMode(split[2]) {
+				return fmt.Errorf("invalid device mode: %s", split[2])
+			}
+			fallthrough
+		case 2:
+			if !server.ValidDeviceMode(split[1]) && !strings.HasPrefix(split[1], "/dev/") {
+				return fmt.Errorf("invalid device mode: %s", split[1])
+			}
+			fallthrough
+		case 1:
+			if !strings.HasPrefix(split[0], "/dev/") {
+				return fmt.Errorf("invalid device mode: %s", split[0])
+			}
+		default:
+			return fmt.Errorf("invalid device specification: %s", d)
+		}
+	}
+
 	if config.UIDMappings != "" && config.ManageNetworkNSLifecycle {
 		return fmt.Errorf("Cannot use UIDMappings with ManageNetworkNSLifecycle")
 	}
@@ -250,6 +272,9 @@ func mergeConfig(config *server.Config, ctx *cli.Context) error {
 	}
 	if ctx.GlobalIsSet("log-level") {
 		config.LogLevel = ctx.GlobalString("log-level")
+	}
+	if ctx.GlobalIsSet("additional-devices") {
+		config.AdditionalDevices = ctx.GlobalStringSlice("additional-devices")
 	}
 	return nil
 }
@@ -513,6 +538,10 @@ func main() {
 			Name:  "gid-mappings",
 			Usage: "specify the GID mappings to use for the user namespace",
 			Value: "",
+		},
+		cli.StringSliceFlag{
+			Name:  "additional-devices",
+			Usage: "devices to add to the containers",
 		},
 	}
 

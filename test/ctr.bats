@@ -109,6 +109,30 @@ function teardown() {
 	stop_crio
 }
 
+@test "devices" {
+	DEVICES="--additional-devices /dev/sda:/dev/xvdc:rwm --additional-devices /dev/sda:/dev/foo:rw" start_crio
+	run crictl runp "$TESTDATA"/sandbox_config.json
+	echo "output"
+	[ "$status" -eq 0 ]
+	pod_id="$output"
+
+	devices=$(cat "$TESTDATA"/container_config.json | python -c 'import json,sys;obj=json.load(sys.stdin); obj["command"] = ["/bin/sh", "-c", "sleep 600"]; json.dump(obj, sys.stdout)')
+	echo "$devices" > "$TESTDIR"/container_config_devices.json
+	run crictl create "$pod_id" "$TESTDIR"/container_config_devices.json "$TESTDATA"/sandbox_config.json
+	echo "$output"
+	[ "$status" -eq 0 ]
+	ctr_id="$output"
+	run crictl start "$ctr_id"
+	echo "$output"
+	[ "$status" -eq 0 ]
+
+	run crictl exec --sync "$ctr_id" sh -c "[ ! -f /dev/xvdc ]"
+	[ "$status" -eq 0 ]
+
+	run crictl exec --sync "$ctr_id" sh -c "[ ! -f /dev/foo ]"
+	[ "$status" -eq 0 ]
+  }
+
 @test "ctr remove" {
 	start_crio
 	run crictl runp "$TESTDATA"/sandbox_config.json
