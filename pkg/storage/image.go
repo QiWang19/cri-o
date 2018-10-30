@@ -424,7 +424,7 @@ func (svc *imageService) PullImage(systemContext *types.SystemContext, imageName
 	if err != nil {
 		return nil, err
 	}
-	err = copy.Image(svc.ctx, policyContext, destRef, srcRef, options)
+	_, err = copy.Image(svc.ctx, policyContext, destRef, srcRef, options)
 	if err != nil {
 		return nil, err
 	}

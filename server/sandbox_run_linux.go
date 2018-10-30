@@ -444,6 +444,14 @@ func (s *Server) runPodSandbox(ctx context.Context, req *pb.RunPodSandboxRequest
 		g.AddLinuxSysctl(key, value)
 	}
 
+	devices, err := getDevicesFromConfig(s.config)
+	if err != nil {
+		return nil, err
+	}
+	for _, d := range devices {
+		g.AddDevice(d)
+	}
+
 	// Set OOM score adjust of the infra container to be very low
 	// so it doesn't get killed.
 	g.SetProcessOOMScoreAdj(PodInfraOOMAdj)

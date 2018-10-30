@@ -7,11 +7,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/containers/libpod/pkg/spec"
 	"github.com/cri-o/ocicni/pkg/ocicni"
 	units "github.com/docker/go-units"
 	"github.com/kubernetes-sigs/cri-o/lib/sandbox"
 	"github.com/kubernetes-sigs/cri-o/server/metrics"
 	"github.com/opencontainers/image-spec/specs-go/v1"
+	"github.com/opencontainers/runc/libcontainer/devices"
+	spec "github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/opencontainers/runtime-tools/validate"
 	"github.com/pkg/errors"
 	"github.com/syndtr/gocapability/capability"
@@ -271,4 +274,30 @@ func getUlimitsFromConfig(config Config) ([]ulimit, error) {
 		ulimits = append(ulimits, ulimit{name: "RLIMIT_" + strings.ToUpper(ul.Name), hard: rl.Hard, soft: rl.Soft})
 	}
 	return ulimits, nil
+}
+
+func getDevicesFromConfig(config Config) ([]spec.LinuxDevice, error) {
+	var linuxdevs []spec.LinuxDevice
+	for _, d := range config.RuntimeConfig.AdditionalDevices {
+		src, dst, permissions, err := createconfig.ParseDevice(d)
+		if err != nil {
+			return nil, err
+		}
+		dev, err := devices.DeviceFromPath(src, permissions)
+		if err != nil {
+			return nil, errors.Wrapf(err, "%s is not a valid device", src)
+		}
+		dev.Path = dst
+		linuxdev := spec.LinuxDevice{
+			Path:     dev.Path,
+			Type:     string(dev.Type),
+			Major:    dev.Major,
+			Minor:    dev.Minor,
+			FileMode: &dev.FileMode,
+			UID:      &dev.Uid,
+			GID:      &dev.Gid,
+		}
+		linuxdevs = append(linuxdevs, linuxdev)
+	}
+	return linuxdevs, nil
 }
