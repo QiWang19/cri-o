@@ -560,6 +560,16 @@ func (s *Server) createSandboxContainer(ctx context.Context, ctr ctrIface.Contai
 		return nil, fmt.Errorf("failed to mount container %s(%s): %v", containerName, containerID, err)
 	}
 
+	// add symlink /etc/mtab to /proc/mounts allow looking for mountfiles there in the container
+	// compatible with Docker
+	mtab := filepath.Join(mountPoint, "/etc/mtab")
+	if err := idtools.MkdirAllAs(filepath.Dir(mtab), 0755, int(ctr.Spec().Config.Process.User.UID), int(ctr.Spec().Config.Process.User.UID)); err != nil {
+		return nil, errors.Wrapf(err, "error creating mtab directory")
+	}
+	if err = os.Symlink("/proc/mounts", mtab); err != nil && !os.IsExist(err) {
+		return nil, err
+	}
+
 	defer func() {
 		if retErr != nil {
 			log.Infof(ctx, "CreateCtrLinux: stopping storage container %s", containerID)
