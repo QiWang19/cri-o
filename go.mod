@@ -15,14 +15,14 @@ require (
 	github.com/containers/buildah v1.20.1
 	github.com/containers/common v0.37.1
 	github.com/containers/conmon v2.0.20+incompatible
-	github.com/containers/image/v5 v5.13.1
-	github.com/containers/ocicrypt v1.1.1
+	github.com/containers/image/v5 v5.13.2
+	github.com/containers/ocicrypt v1.1.2
 	github.com/containers/podman/v3 v3.1.2
-	github.com/containers/storage v1.32.2
+	github.com/containers/storage v1.32.3
 	github.com/coreos/go-systemd/v22 v22.3.2
 	github.com/cpuguy83/go-md2man v1.0.10
 	github.com/creack/pty v1.1.13
-	github.com/cri-o/ocicni v0.2.1-0.20210301205850-541cf7c703cf
+	github.com/cri-o/ocicni v0.2.1-0.20210623033107-4ea5fb8752cf
 	github.com/cyphar/filepath-securejoin v0.2.2
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/docker/go-units v0.4.0
@@ -32,7 +32,7 @@ require (
 	github.com/go-zoo/bone v1.3.0
 	github.com/godbus/dbus/v5 v5.0.4
 	github.com/gogo/protobuf v1.3.2
-	github.com/golang/mock v1.5.0
+	github.com/golang/mock v1.6.0
 	github.com/google/renameio v1.0.1
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
@@ -57,17 +57,17 @@ require (
 	golang.org/x/net v0.0.0-20210428140749-89ef3d95e781
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/sys v0.0.0-20210603125802-9665404d3644
-	google.golang.org/grpc v1.38.0
-	k8s.io/api v0.21.1
-	k8s.io/apimachinery v0.21.1
-	k8s.io/client-go v0.21.1
-	k8s.io/cri-api v0.21.1
+	google.golang.org/grpc v1.39.0
+	k8s.io/api v0.21.2
+	k8s.io/apimachinery v0.21.2
+	k8s.io/client-go v0.21.2
+	k8s.io/cri-api v0.21.2
 	k8s.io/klog/v2 v2.9.0
-	k8s.io/kubernetes v1.21.1
+	k8s.io/kubernetes v1.21.2
 	k8s.io/release v0.8.0
 	k8s.io/utils v0.0.0-20210305010621-2afb4311ab10
 	mvdan.cc/sh/v3 v3.3.0
-	sigs.k8s.io/release-utils v0.2.1
+	sigs.k8s.io/release-utils v0.3.0
 	sigs.k8s.io/zeitgeist v0.3.0
 )
 
