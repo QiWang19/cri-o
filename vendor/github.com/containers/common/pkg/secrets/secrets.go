@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/containers/common/pkg/secrets/filedriver"
+	"github.com/containers/common/pkg/secrets/passdriver"
+	"github.com/containers/common/pkg/secrets/shelldriver"
 	"github.com/containers/storage/pkg/lockfile"
 	"github.com/containers/storage/pkg/stringid"
 	"github.com/pkg/errors"
@@ -22,8 +24,8 @@ const secretIDLength = 25
 // errInvalidPath indicates that the secrets path is invalid
 var errInvalidPath = errors.New("invalid secrets path")
 
-// errNoSuchSecret indicates that the secret does not exist
-var errNoSuchSecret = errors.New("no such secret")
+// ErrNoSuchSecret indicates that the secret does not exist
+var ErrNoSuchSecret = errors.New("no such secret")
 
 // errSecretNameInUse indicates that the secret name is already in use
 var errSecretNameInUse = errors.New("secret name in use")
@@ -99,7 +101,7 @@ func NewManager(rootPath string) (*SecretsManager, error) {
 	if !filepath.IsAbs(rootPath) {
 		return nil, errors.Wrapf(errInvalidPath, "path must be absolute: %s", rootPath)
 	}
-	// the lockfile functions requre that the rootPath dir is executable
+	// the lockfile functions require that the rootPath dir is executable
 	if err := os.MkdirAll(rootPath, 0700); err != nil {
 		return nil, err
 	}
@@ -150,7 +152,7 @@ func (s *SecretsManager) Store(name string, data []byte, driverType string, driv
 		newID = newID[0:secretIDLength]
 		_, err := s.lookupSecret(newID)
 		if err != nil {
-			if errors.Cause(err) == errNoSuchSecret {
+			if errors.Cause(err) == ErrNoSuchSecret {
 				secr.ID = newID
 				break
 			} else {
@@ -271,12 +273,17 @@ func validateSecretName(name string) error {
 
 // getDriver creates a new driver.
 func getDriver(name string, opts map[string]string) (SecretsDriver, error) {
-	if name == "file" {
+	switch name {
+	case "file":
 		if path, ok := opts["path"]; ok {
 			return filedriver.NewDriver(path)
 		} else {
 			return nil, errors.Wrap(errInvalidDriverOpt, "need path for filedriver")
 		}
+	case "pass":
+		return passdriver.NewDriver(opts)
+	case "shell":
+		return shelldriver.NewDriver(opts)
 	}
 	return nil, errInvalidDriver
 }
