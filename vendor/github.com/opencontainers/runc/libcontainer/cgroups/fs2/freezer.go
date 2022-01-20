@@ -1,19 +1,17 @@
-// +build linux
-
 package fs2
 
 import (
 	"bufio"
-	stdErrors "errors"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups/fscommon"
-	"github.com/opencontainers/runc/libcontainer/configs"
-	"github.com/pkg/errors"
 	"golang.org/x/sys/unix"
+
+	"github.com/opencontainers/runc/libcontainer/cgroups"
+	"github.com/opencontainers/runc/libcontainer/configs"
 )
 
 func setFreezer(dirPath string, state configs.FreezerState) error {
@@ -26,10 +24,10 @@ func setFreezer(dirPath string, state configs.FreezerState) error {
 	case configs.Thawed:
 		stateStr = "0"
 	default:
-		return errors.Errorf("invalid freezer state %q requested", state)
+		return fmt.Errorf("invalid freezer state %q requested", state)
 	}
 
-	fd, err := fscommon.OpenFile(dirPath, "cgroup.freeze", unix.O_RDWR)
+	fd, err := cgroups.OpenFile(dirPath, "cgroup.freeze", unix.O_RDWR)
 	if err != nil {
 		// We can ignore this request as long as the user didn't ask us to
 		// freeze the container (since without the freezer cgroup, that's a
@@ -37,7 +35,7 @@ func setFreezer(dirPath string, state configs.FreezerState) error {
 		if state != configs.Frozen {
 			return nil
 		}
-		return errors.Wrap(err, "freezer not supported")
+		return fmt.Errorf("freezer not supported: %w", err)
 	}
 	defer fd.Close()
 
@@ -48,17 +46,17 @@ func setFreezer(dirPath string, state configs.FreezerState) error {
 	if actualState, err := readFreezer(dirPath, fd); err != nil {
 		return err
 	} else if actualState != state {
-		return errors.Errorf(`expected "cgroup.freeze" to be in state %q but was in %q`, state, actualState)
+		return fmt.Errorf(`expected "cgroup.freeze" to be in state %q but was in %q`, state, actualState)
 	}
 	return nil
 }
 
 func getFreezer(dirPath string) (configs.FreezerState, error) {
-	fd, err := fscommon.OpenFile(dirPath, "cgroup.freeze", unix.O_RDONLY)
+	fd, err := cgroups.OpenFile(dirPath, "cgroup.freeze", unix.O_RDONLY)
 	if err != nil {
 		// If the kernel is too old, then we just treat the freezer as being in
 		// an "undefined" state.
-		if os.IsNotExist(err) || stdErrors.Is(err, unix.ENODEV) {
+		if os.IsNotExist(err) || errors.Is(err, unix.ENODEV) {
 			err = nil
 		}
 		return configs.Undefined, err
@@ -82,13 +80,13 @@ func readFreezer(dirPath string, fd *os.File) (configs.FreezerState, error) {
 	case "1\n":
 		return waitFrozen(dirPath)
 	default:
-		return configs.Undefined, errors.Errorf(`unknown "cgroup.freeze" state: %q`, state)
+		return configs.Undefined, fmt.Errorf(`unknown "cgroup.freeze" state: %q`, state)
 	}
 }
 
 // waitFrozen polls cgroup.events until it sees "frozen 1" in it.
 func waitFrozen(dirPath string) (configs.FreezerState, error) {
-	fd, err := fscommon.OpenFile(dirPath, "cgroup.events", unix.O_RDONLY)
+	fd, err := cgroups.OpenFile(dirPath, "cgroup.events", unix.O_RDONLY)
 	if err != nil {
 		return configs.Undefined, err
 	}

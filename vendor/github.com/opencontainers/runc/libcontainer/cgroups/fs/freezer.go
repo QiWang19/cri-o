@@ -1,5 +1,3 @@
-// +build linux
-
 package fs
 
 import (
@@ -10,21 +8,19 @@ import (
 	"time"
 
 	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/cgroups/fscommon"
 	"github.com/opencontainers/runc/libcontainer/configs"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sys/unix"
 )
 
-type FreezerGroup struct {
-}
+type FreezerGroup struct{}
 
 func (s *FreezerGroup) Name() string {
 	return "freezer"
 }
 
-func (s *FreezerGroup) Apply(path string, d *cgroupData) error {
-	return join(path, d.pid)
+func (s *FreezerGroup) Apply(path string, _ *configs.Resources, pid int) error {
+	return apply(path, pid)
 }
 
 func (s *FreezerGroup) Set(path string, r *configs.Resources) (Err error) {
@@ -35,7 +31,7 @@ func (s *FreezerGroup) Set(path string, r *configs.Resources) (Err error) {
 				// Freezing failed, and it is bad and dangerous
 				// to leave the cgroup in FROZEN or FREEZING
 				// state, so (try to) thaw it back.
-				_ = fscommon.WriteFile(path, "freezer.state", string(configs.Thawed))
+				_ = cgroups.WriteFile(path, "freezer.state", string(configs.Thawed))
 			}
 		}()
 
@@ -68,11 +64,11 @@ func (s *FreezerGroup) Set(path string, r *configs.Resources) (Err error) {
 				// the chances to succeed in freezing
 				// in case new processes keep appearing
 				// in the cgroup.
-				_ = fscommon.WriteFile(path, "freezer.state", string(configs.Thawed))
+				_ = cgroups.WriteFile(path, "freezer.state", string(configs.Thawed))
 				time.Sleep(10 * time.Millisecond)
 			}
 
-			if err := fscommon.WriteFile(path, "freezer.state", string(configs.Frozen)); err != nil {
+			if err := cgroups.WriteFile(path, "freezer.state", string(configs.Frozen)); err != nil {
 				return err
 			}
 
@@ -83,7 +79,7 @@ func (s *FreezerGroup) Set(path string, r *configs.Resources) (Err error) {
 				// system.
 				time.Sleep(10 * time.Microsecond)
 			}
-			state, err := fscommon.ReadFile(path, "freezer.state")
+			state, err := cgroups.ReadFile(path, "freezer.state")
 			if err != nil {
 				return err
 			}
@@ -104,7 +100,7 @@ func (s *FreezerGroup) Set(path string, r *configs.Resources) (Err error) {
 		// Despite our best efforts, it got stuck in FREEZING.
 		return errors.New("unable to freeze")
 	case configs.Thawed:
-		return fscommon.WriteFile(path, "freezer.state", string(configs.Thawed))
+		return cgroups.WriteFile(path, "freezer.state", string(configs.Thawed))
 	case configs.Undefined:
 		return nil
 	default:
@@ -118,7 +114,7 @@ func (s *FreezerGroup) GetStats(path string, stats *cgroups.Stats) error {
 
 func (s *FreezerGroup) GetState(path string) (configs.FreezerState, error) {
 	for {
-		state, err := fscommon.ReadFile(path, "freezer.state")
+		state, err := cgroups.ReadFile(path, "freezer.state")
 		if err != nil {
 			// If the kernel is too old, then we just treat the freezer as
 			// being in an "undefined" state.
@@ -131,7 +127,25 @@ func (s *FreezerGroup) GetState(path string) (configs.FreezerState, error) {
 		case "THAWED":
 			return configs.Thawed, nil
 		case "FROZEN":
-			return configs.Frozen, nil
+			// Find out whether the cgroup is frozen directly,
+			// or indirectly via an ancestor.
+			self, err := cgroups.ReadFile(path, "freezer.self_freezing")
+			if err != nil {
+				// If the kernel is too old, then we just treat
+				// it as being frozen.
+				if errors.Is(err, os.ErrNotExist) || errors.Is(err, unix.ENODEV) {
+					err = nil
+				}
+				return configs.Frozen, err
+			}
+			switch self {
+			case "0\n":
+				return configs.Thawed, nil
+			case "1\n":
+				return configs.Frozen, nil
+			default:
+				return configs.Undefined, fmt.Errorf(`unknown "freezer.self_freezing" state: %q`, self)
+			}
 		case "FREEZING":
 			// Make sure we get a stable freezer state, so retry if the cgroup
 			// is still undergoing freezing. This should be a temporary delay.
