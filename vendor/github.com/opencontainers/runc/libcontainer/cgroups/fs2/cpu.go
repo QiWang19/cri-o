@@ -1,5 +1,3 @@
-// +build linux
-
 package fs2
 
 import (
@@ -23,7 +21,7 @@ func setCpu(dirPath string, r *configs.Resources) error {
 
 	// NOTE: .CpuShares is not used here. Conversion is the caller's responsibility.
 	if r.CpuWeight != 0 {
-		if err := fscommon.WriteFile(dirPath, "cpu.weight", strconv.FormatUint(r.CpuWeight, 10)); err != nil {
+		if err := cgroups.WriteFile(dirPath, "cpu.weight", strconv.FormatUint(r.CpuWeight, 10)); err != nil {
 			return err
 		}
 	}
@@ -40,15 +38,17 @@ func setCpu(dirPath string, r *configs.Resources) error {
 			period = 100000
 		}
 		str += " " + strconv.FormatUint(period, 10)
-		if err := fscommon.WriteFile(dirPath, "cpu.max", str); err != nil {
+		if err := cgroups.WriteFile(dirPath, "cpu.max", str); err != nil {
 			return err
 		}
 	}
 
 	return nil
 }
+
 func statCpu(dirPath string, stats *cgroups.Stats) error {
-	f, err := fscommon.OpenFile(dirPath, "cpu.stat", os.O_RDONLY)
+	const file = "cpu.stat"
+	f, err := cgroups.OpenFile(dirPath, file, os.O_RDONLY)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func statCpu(dirPath string, stats *cgroups.Stats) error {
 	for sc.Scan() {
 		t, v, err := fscommon.ParseKeyValue(sc.Text())
 		if err != nil {
-			return err
+			return &parseError{Path: dirPath, File: file, Err: err}
 		}
 		switch t {
 		case "usage_usec":
@@ -79,6 +79,9 @@ func statCpu(dirPath string, stats *cgroups.Stats) error {
 		case "throttled_usec":
 			stats.CpuStats.ThrottlingData.ThrottledTime = v * 1000
 		}
+	}
+	if err := sc.Err(); err != nil {
+		return &parseError{Path: dirPath, File: file, Err: err}
 	}
 	return nil
 }
