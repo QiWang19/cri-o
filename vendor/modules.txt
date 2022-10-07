@@ -582,7 +582,7 @@ github.com/golang/snappy
 github.com/gomarkdown/markdown/ast
 github.com/gomarkdown/markdown/html
 github.com/gomarkdown/markdown/parser
-# github.com/google/go-cmp v0.5.5
+# github.com/google/go-cmp v0.5.8
 github.com/google/go-cmp/cmp
 github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
@@ -744,15 +744,12 @@ github.com/onsi/ginkgo/reporters/stenographer
 github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
 github.com/onsi/ginkgo/types
-# github.com/onsi/gomega v1.13.0
+# github.com/onsi/gomega v1.21.1
 ## explicit
 github.com/onsi/gomega
 github.com/onsi/gomega/format
-github.com/onsi/gomega/internal/assertion
-github.com/onsi/gomega/internal/asyncassertion
-github.com/onsi/gomega/internal/defaults
-github.com/onsi/gomega/internal/oraclematcher
-github.com/onsi/gomega/internal/testingtsupport
+github.com/onsi/gomega/internal
+github.com/onsi/gomega/internal/gutil
 github.com/onsi/gomega/matchers
 github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
 github.com/onsi/gomega/matchers/support/goraph/edge
@@ -940,13 +937,15 @@ go.opencensus.io/internal
 go.opencensus.io/trace
 go.opencensus.io/trace/internal
 go.opencensus.io/trace/tracestate
-# golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
+# golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/cast5
 golang.org/x/crypto/chacha20
 golang.org/x/crypto/curve25519
+golang.org/x/crypto/curve25519/internal/field
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ed25519/internal/edwards25519
+golang.org/x/crypto/internal/poly1305
 golang.org/x/crypto/internal/subtle
 golang.org/x/crypto/openpgp
 golang.org/x/crypto/openpgp/armor
@@ -955,18 +954,17 @@ golang.org/x/crypto/openpgp/errors
 golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
 golang.org/x/crypto/pbkdf2
-golang.org/x/crypto/poly1305
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/mod v0.4.2
+# golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4
 golang.org/x/mod/internal/lazyregexp
 golang.org/x/mod/modfile
 golang.org/x/mod/module
 golang.org/x/mod/semver
-# golang.org/x/net v0.0.0-20210428140749-89ef3d95e781
+# golang.org/x/net v0.0.0-20220722155237-a158d28d115b
 ## explicit
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
@@ -985,11 +983,11 @@ golang.org/x/net/websocket
 # golang.org/x/oauth2 v0.0.0-20210112200429-01de73cf58bd
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
-# golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+# golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 ## explicit
 golang.org/x/sync/errgroup
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20210603125802-9665404d3644
+# golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f
 ## explicit
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
@@ -997,9 +995,9 @@ golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.0.0-20210503060354-a79de5458b56
+# golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 golang.org/x/term
-# golang.org/x/text v0.3.6
+# golang.org/x/text v0.3.7
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
@@ -1022,7 +1020,7 @@ golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
 # golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
 golang.org/x/time/rate
-# golang.org/x/tools v0.1.1
+# golang.org/x/tools v0.1.12
 golang.org/x/tools/go/ast/astutil
 golang.org/x/tools/go/ast/inspector
 golang.org/x/tools/imports
@@ -1034,9 +1032,7 @@ golang.org/x/tools/internal/fastwalk
 golang.org/x/tools/internal/gocommand
 golang.org/x/tools/internal/gopathwalk
 golang.org/x/tools/internal/imports
-# golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
-golang.org/x/xerrors
-golang.org/x/xerrors/internal
+golang.org/x/tools/internal/typeparams
 # google.golang.org/appengine v1.6.7
 google.golang.org/appengine/internal
 google.golang.org/appengine/internal/base
@@ -1093,7 +1089,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.26.0
+# google.golang.org/protobuf v1.28.0
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
 google.golang.org/protobuf/internal/descfmt
@@ -1138,7 +1134,7 @@ gopkg.in/tomb.v1
 gopkg.in/warnings.v0
 # gopkg.in/yaml.v2 v2.4.0
 gopkg.in/yaml.v2
-# gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+# gopkg.in/yaml.v3 v3.0.1
 gopkg.in/yaml.v3
 # k8s.io/api v0.21.2 => k8s.io/kubernetes/staging/src/k8s.io/api v0.0.0-20210408162405-cb303e613a12
 ## explicit
