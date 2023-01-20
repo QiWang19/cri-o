@@ -1,5 +1,3 @@
-// +build linux
-
 package fs
 
 import (
@@ -9,22 +7,21 @@ import (
 
 	"github.com/opencontainers/runc/libcontainer/cgroups"
 	cgroupdevices "github.com/opencontainers/runc/libcontainer/cgroups/devices"
-	"github.com/opencontainers/runc/libcontainer/cgroups/fscommon"
 	"github.com/opencontainers/runc/libcontainer/configs"
 	"github.com/opencontainers/runc/libcontainer/devices"
 	"github.com/opencontainers/runc/libcontainer/userns"
 )
 
 type DevicesGroup struct {
-	testingSkipFinalCheck bool
+	TestingSkipFinalCheck bool
 }
 
 func (s *DevicesGroup) Name() string {
 	return "devices"
 }
 
-func (s *DevicesGroup) Apply(path string, d *cgroupData) error {
-	if d.config.SkipDevices {
+func (s *DevicesGroup) Apply(path string, r *configs.Resources, pid int) error {
+	if r.SkipDevices {
 		return nil
 	}
 	if path == "" {
@@ -32,11 +29,12 @@ func (s *DevicesGroup) Apply(path string, d *cgroupData) error {
 		// is a hard requirement for container's security.
 		return errSubsystemDoesNotExist
 	}
-	return join(path, d.pid)
+
+	return apply(path, pid)
 }
 
 func loadEmulator(path string) (*cgroupdevices.Emulator, error) {
-	list, err := fscommon.ReadFile(path, "devices.list")
+	list, err := cgroups.ReadFile(path, "devices.list")
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +79,7 @@ func (s *DevicesGroup) Set(path string, r *configs.Resources) error {
 		if rule.Allow {
 			file = "devices.allow"
 		}
-		if err := fscommon.WriteFile(path, file, rule.CgroupString()); err != nil {
+		if err := cgroups.WriteFile(path, file, rule.CgroupString()); err != nil {
 			return err
 		}
 	}
@@ -92,7 +90,7 @@ func (s *DevicesGroup) Set(path string, r *configs.Resources) error {
 	//
 	// This safety-check is skipped for the unit tests because we cannot
 	// currently mock devices.list correctly.
-	if !s.testingSkipFinalCheck {
+	if !s.TestingSkipFinalCheck {
 		currentAfter, err := loadEmulator(path)
 		if err != nil {
 			return err
