@@ -143,16 +143,6 @@ func (s *Server) pullImage(ctx context.Context, pullArgs *pullArguments) (string
 		sourceCtx.DockerAuthConfig = &pullArgs.credentials
 	}
 
-	if pullArgs.namespace != "" {
-		policyPath := filepath.Join(s.config.SignaturePolicyDir, pullArgs.namespace+".json")
-		if _, err := os.Stat(policyPath); err == nil {
-			sourceCtx.SignaturePolicyPath = policyPath
-		} else if !os.IsNotExist(err) {
-			return "", fmt.Errorf("read policy path %s: %w", policyPath, err)
-		}
-	}
-	log.Debugf(ctx, "Using pull policy path for image %s: %s", pullArgs.image, sourceCtx.SignaturePolicyPath)
-
 	decryptConfig, err := getDecryptionKeys(s.config.DecryptionKeysPath)
 	if err != nil {
 		return "", err
