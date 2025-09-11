@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/containers/image/v5/docker/reference"
 	imageTypes "github.com/containers/image/v5/types"
 	encconfig "github.com/containers/ocicrypt/config"
 	"github.com/docker/distribution/registry/api/errcode"
@@ -136,9 +138,21 @@ func (s *Server) pullImage(ctx context.Context, pullArgs *pullArguments) (storag
 	ctx, span := log.StartSpan(ctx)
 	defer span.End()
 
-	sourceCtx, err := s.contextForNamespace(pullArgs.namespace)
+	sourceCtx, err := s.contextForNamespace(ctx, pullArgs.image, pullArgs.namespace)
 	if err != nil {
 		return storage.RegistryImageReference{}, fmt.Errorf("get context for namespace: %w", err)
+	}
+
+	if sourceCtx.AuthFilePath != "" {
+		defer func() {
+			if err := os.Remove(sourceCtx.AuthFilePath); err != nil {
+				log.Warnf(ctx, "Unable to remove short-lived auth file: %v", err)
+
+				return
+			}
+
+			log.Debugf(ctx, "Removed short-lived auth file: %s", sourceCtx.AuthFilePath)
+		}()
 	}
 
 	log.Debugf(ctx, "Using pull policy path for image %s: %q", pullArgs.image, sourceCtx.SignaturePolicyPath)
@@ -206,19 +220,34 @@ func (s *Server) pullImage(ctx context.Context, pullArgs *pullArguments) (storag
 
 // contextForNamespace takes the provided namespace and returns a modifiable
 // copy of the servers system context.
-func (s *Server) contextForNamespace(namespace string) (imageTypes.SystemContext, error) {
-	ctx := *s.config.SystemContext // A shallow copy we can modify
+func (s *Server) contextForNamespace(ctx context.Context, imageRef, namespace string) (imageTypes.SystemContext, error) {
+	sysCtx := *s.config.SystemContext // A shallow copy we can modify
 
 	if namespace != "" {
 		policyPath := filepath.Join(s.config.SignaturePolicyDir, namespace+".json")
 		if _, err := os.Stat(policyPath); err == nil {
-			ctx.SignaturePolicyPath = policyPath
+			sysCtx.SignaturePolicyPath = policyPath
 		} else if !os.IsNotExist(err) {
-			return ctx, fmt.Errorf("read policy path %s: %w", policyPath, err)
+			return sysCtx, fmt.Errorf("read policy path %s: %w", policyPath, err)
+		}
+
+		// Normalize the image ref to use the same format as the credential provider
+		image, err := reference.ParseDockerRef(imageRef)
+		if err != nil {
+			return sysCtx, fmt.Errorf("parse image name: %w", err)
+		}
+		// Follow the strict format of <NAMESPACE>-<IMAGE_NAME_SHA256>.json to resolve possible auth files.
+		hash := sha256.Sum256([]byte(image.String()))
+		authFilePath := filepath.Join(s.config.NamespacedAuthDir, fmt.Sprintf("%s-%x.json", namespace, hash))
+		log.Tracef(ctx, "Looking for namespaced auth JSON file in: %s", authFilePath)
+
+		if _, err := os.Stat(authFilePath); err == nil {
+			log.Infof(ctx, "Using auth file for namespace %s: %s", namespace, authFilePath)
+			sysCtx.AuthFilePath = authFilePath
 		}
 	}
 
-	return ctx, nil
+	return sysCtx, nil
 }
 
 func (s *Server) pullImageCandidate(ctx context.Context, sourceCtx *imageTypes.SystemContext, remoteCandidateName storage.RegistryImageReference, decryptConfig *encconfig.DecryptConfig, cgroup string) (storage.RegistryImageReference, error) {
