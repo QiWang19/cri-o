@@ -240,7 +240,7 @@ func (s *Server) contextForNamespace(ctx context.Context, imageRef, namespace st
 		hash := sha256.Sum256([]byte(image.String()))
 		authFilePath := filepath.Join(s.config.NamespacedAuthDir, fmt.Sprintf("%s-%x.json", namespace, hash))
 		log.Tracef(ctx, "Looking for namespaced auth JSON file in: %s", authFilePath)
-
+		log.Infof(ctx, "Using auth file for namespace %s: %s, %s", namespace, authFilePath, image.String())
 		if _, err := os.Stat(authFilePath); err == nil {
 			log.Infof(ctx, "Using auth file for namespace %s: %s", namespace, authFilePath)
 			sysCtx.AuthFilePath = authFilePath
