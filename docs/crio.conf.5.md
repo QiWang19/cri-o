@@ -238,7 +238,7 @@ List of devices on the host that a user can specify with the "io.kubernetes.cri-
 **additional_devices**=[]
 List of additional devices. Specified as "<device-on-host>:<device-on-container>:<permissions>", for example: "--additional-devices=/dev/sdc:/dev/xvdc:rwm". If it is empty or commented out, only the devices defined in the container json file by the user/kube will be added.
 
-**hooks_dir**=["*path*", ...]
+**hooks_dir**=["_path_", ...]
 Each `*.json` file in the path configures a hook for CRI-O containers. For more details on the syntax of the JSON files and the semantics of hook injection, see `oci-hooks(5)`. CRI-O currently support both the 1.0.0 and 0.1.0 hook schemas, although the 0.1.0 schema is deprecated.
 
 Paths listed later in the array have higher precedence (`oci-hooks(5)` discusses directory precedence).
@@ -549,6 +549,9 @@ Path to the directory where CNI configuration files are located.
 
 **plugin_dirs**=["/opt/cni/bin/",]
 List of paths to directories where CNI plugin binaries are located.
+
+**cni_status_grace_period**="0s"
+Enable continuous CNI STATUS monitoring with the given grace period. When set to "0s" (default), monitoring is disabled and plugin health is only determined at startup; runtime failures will not be detected. When set to a positive duration (e.g. "1m"), a background goroutine polls the plugin every 5 seconds and waits for this grace period before marking the node not-ready, tolerating brief CNI disruptions during plugin upgrades (e.g. OVN-K daemonset rollout).
 
 ## CRIO.METRICS TABLE
 
