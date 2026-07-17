@@ -13,7 +13,7 @@ dependencies:
   # tag the .0 release if it does not already exist. If the .0 release is done,
   # increase the development version to the next minor (1.x.0).
   - name: development version
-    version: 1.36.1
+    version: 1.36.2
     refPaths:
       - path: internal/version/version.go
         match: Version
@@ -53,10 +53,12 @@ dependencies:
         match: conmon
 
   - name: cri-tools
-    version: master
+    version: v1.36.0
     refPaths:
       - path: contrib/test/ci/vars.yml
         match: cri_tools_git_version
+      - path: scripts/versions
+        match: cri-tools
 
   - name: buildah
     version: v1.38.0
@@ -65,10 +67,12 @@ dependencies:
         match: buildah
 
   - name: runc
-    version: main
+    version: v1.4.3
     refPaths:
       - path: scripts/versions
         match: runc
+      - path: contrib/test/ci/vars.yml
+        match: runc_git_version
 
   - name: libpathrs
     version: 0.2.4
