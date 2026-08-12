@@ -67,7 +67,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.41.0
 	go.opentelemetry.io/otel/trace v1.41.0
 	go.podman.io/common v0.66.2-0.20260126213724-1e46b0756b39
-	go.podman.io/image/v5 v5.39.2
+	go.podman.io/image/v5 v5.38.0
 	go.podman.io/storage v1.62.0
 	go.uber.org/mock v0.6.0
 	golang.org/x/net v0.51.0
@@ -104,7 +104,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/checkpoint-restore/go-criu/v7 v7.2.0 // indirect
 	github.com/chzyer/readline v1.5.1 // indirect
 	github.com/clipperhouse/displaywidth v0.6.0 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
@@ -263,8 +262,4 @@ require (
 	tags.cncf.io/container-device-interface/specs-go v1.1.0 // indirect
 )
 
-replace (
-	go.podman.io/common => gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/common v0.0.0-20260810190554-36ed1b26b16d
-	go.podman.io/image/v5 => gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/image/v5 v5.0.0-20260810190554-36ed1b26b16d
-	go.podman.io/storage => gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/storage v0.0.0-20260810190554-36ed1b26b16d
-)
+replace go.podman.io/image/v5 => gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/image/v5 v5.0.0-20260810190554-36ed1b26b16d

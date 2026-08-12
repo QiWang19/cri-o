@@ -41,8 +41,6 @@ github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UF
 github.com/cespare/xxhash/v2 v2.3.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/checkpoint-restore/checkpointctl v1.5.0 h1:Uu+D2cOf/GUyCMk23Y8L69P6YoATTe6pH+Au64O3y28=
 github.com/checkpoint-restore/checkpointctl v1.5.0/go.mod h1:y5HRs1ZWQUZGyEuthlTHmTJN9PUMOjlaH6JvVaNq9kE=
-github.com/checkpoint-restore/go-criu/v7 v7.2.0 h1:qGiWA4App1gGlEfIJ68WR9jbezV9J7yZdjzglezcqKo=
-github.com/checkpoint-restore/go-criu/v7 v7.2.0/go.mod h1:u0LCWLg0w4yqqu14aXhiB4YD3a1qd8EcCEg7vda5dwo=
 github.com/checkpoint-restore/go-criu/v8 v8.2.0 h1:dsgMgj/eJtZNKn3qn/+Ri0b4bd0uo6o2zt1yd8Nj2NI=
 github.com/checkpoint-restore/go-criu/v8 v8.2.0/go.mod h1:HVKJ1dK+bowJcFI1MtdL2ECIuY+/AtRMHzD9Lqa4uA4=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
@@ -133,8 +131,8 @@ github.com/disiqueira/gotree/v3 v3.0.2 h1:ik5iuLQQoufZBNPY518dXhiO5056hyNBIK9lWh
 github.com/disiqueira/gotree/v3 v3.0.2/go.mod h1:ZuyjE4+mUQZlbpkI24AmruZKhg3VHEgPLDY8Qk+uUu8=
 github.com/distribution/reference v0.6.0 h1:0IXCQ5g4/QMHHkarYzh5l+u8T3t73zM5QvfrDyIgxBk=
 github.com/distribution/reference v0.6.0/go.mod h1:BbU0aIcezP1/5jX/8MP0YiH4SdvB5Y4f/wlDRiLyi3E=
-github.com/docker/cli v29.0.3+incompatible h1:8J+PZIcF2xLd6h5sHPsp5pvvJA+Sr2wGQxHkRl53a1E=
-github.com/docker/cli v29.0.3+incompatible/go.mod h1:JLrzqnKDaYBop7H2jaqPtU4hHvMKP+vjCwu2uszcLI8=
+github.com/docker/cli v29.1.5+incompatible h1:GckbANUt3j+lsnQ6eCcQd70mNSOismSHWt8vk2AX8ao=
+github.com/docker/cli v29.1.5+incompatible/go.mod h1:JLrzqnKDaYBop7H2jaqPtU4hHvMKP+vjCwu2uszcLI8=
 github.com/docker/distribution v2.8.3+incompatible h1:AtKxIZ36LoNK51+Z6RpzLpddBirtxJnzDrHLEKxTAYk=
 github.com/docker/distribution v2.8.3+incompatible/go.mod h1:J2gT2udsDAN96Uj4KfcMRqY0/ypR+oyYUYmja8H+y+w=
 github.com/docker/docker v28.5.2+incompatible h1:DBX0Y0zAjZbSrm1uzOkdr1onVghKaftjlSWt4AFexzM=
@@ -537,12 +535,8 @@ github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1/go.mod h1:Ohn+xnUBi
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
-gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/common v0.0.0-20260810190554-36ed1b26b16d h1:hG0WfAnwCnG0SxNAKEj1IfwryIvECAFA7tHGvIXCpd0=
-gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/common v0.0.0-20260810190554-36ed1b26b16d/go.mod h1:XVmSLtnhJwGb+ImYn6BXiozxVE3mYZJgiiBuDOiOquk=
 gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/image/v5 v5.0.0-20260810190554-36ed1b26b16d h1:Crhl70mkEYQ2LrzneqjT1w94Vt0WQ4aM6Rjvp1E6EUI=
 gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/image/v5 v5.0.0-20260810190554-36ed1b26b16d/go.mod h1:SlaR6Pra1ATIx4BcuZ16oafb3QcCHISaKcJbtlN/G/0=
-gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/storage v0.0.0-20260810190554-36ed1b26b16d h1:Y459KrNkBs9GPOJUhqBKXRJ2HfuO/CTVH4fKe4N6p0E=
-gitlab.cee.redhat.com/sustaining-engineering/container-tools/src-git/container-libs/storage v0.0.0-20260810190554-36ed1b26b16d/go.mod h1:A3UBK0XypjNZ6pghRhuxg62+2NIm5lcUGv/7XyMhMUI=
 go.mongodb.org/mongo-driver v1.17.3 h1:TQyXhnsWfWtgAhMtOgtYHMTkZIfBTpMTsMnd9ZBeHxQ=
 go.mongodb.org/mongo-driver v1.17.3/go.mod h1:Hy04i7O2kC4RS06ZrhPRqj/u4DTYkFDAAccj+rVKqgQ=
 go.opentelemetry.io/auto/sdk v1.2.1 h1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64=
@@ -571,6 +565,10 @@ go.opentelemetry.io/otel/trace v1.41.0 h1:Vbk2co6bhj8L59ZJ6/xFTskY+tGAbOnCtQGVVa
 go.opentelemetry.io/otel/trace v1.41.0/go.mod h1:U1NU4ULCoxeDKc09yCWdWe+3QoyweJcISEVa1RBzOis=
 go.opentelemetry.io/proto/otlp v1.9.0 h1:l706jCMITVouPOqEnii2fIAuO3IVGBRPV5ICjceRb/A=
 go.opentelemetry.io/proto/otlp v1.9.0/go.mod h1:xE+Cx5E/eEHw+ISFkwPLwCZefwVjY+pqKg1qcK03+/4=
+go.podman.io/common v0.66.2-0.20260126213724-1e46b0756b39 h1:qMQW6s4s6dmewSyyR5bWWvdGXt9SnRSdXTHiOPvbgcI=
+go.podman.io/common v0.66.2-0.20260126213724-1e46b0756b39/go.mod h1:bGauG8nGM+EIHwcCXqhHFCOpdrMZrlap4yrlmNUJs1Y=
+go.podman.io/storage v1.62.0 h1:0QjX1XlzVmbiaulb+aR/CG6p9+pzaqwIeZPe3tEjHbY=
+go.podman.io/storage v1.62.0/go.mod h1:A3UBK0XypjNZ6pghRhuxg62+2NIm5lcUGv/7XyMhMUI=
 go.uber.org/goleak v1.3.0 h1:2K3zAYmnTNqV73imy9J1T3WC+gmCePx2hEGkimedGto=
 go.uber.org/goleak v1.3.0/go.mod h1:CoHD4mav9JJNrW/WLlf7HGZPjdw8EucARQHekz1X6bE=
 go.uber.org/mock v0.6.0 h1:hyF9dfmbgIX5EfOdasqLsWD6xqpNZlXblLB/Dbnwv3Y=
