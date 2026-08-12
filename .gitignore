@@ -43,3 +43,7 @@ result
 
 # See https://github.com/cri-o/cri-o/issues/4820
 /vendor/**/.gitattributes
+
+# Downstream container-libs replace directives cause vendor/ to differ from upstream.
+# Regenerate with: GOPRIVATE=gitlab.cee.redhat.com/* go mod vendor
+/vendor/
